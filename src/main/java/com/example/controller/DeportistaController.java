@@ -4,7 +4,6 @@ import com.example.model.Deportista;
 import com.example.service.DeportistaService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,11 +21,21 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RequestMapping("/v1")
 public class DeportistaController {
     
-    @Autowired
     private DeportistaService deportistaService;
     
+    @Autowired
+    public DeportistaController(DeportistaService deportistaService){
+        this.deportistaService = deportistaService;
+    }
+    
 
-    @GetMapping("/id")
+    @GetMapping("/mostrar-todo")
+    public ResponseEntity<List<Deportista>> listarElementos(){
+        List<Deportista> d = deportistaService.listarTodos();
+        return new ResponseEntity<>(d,HttpStatus.OK);
+    }
+    
+    @GetMapping("/buscarPorId")
     public ResponseEntity<Deportista> buscarPorId(@RequestParam long id){
         Deportista deportista = deportistaService.buscarPorId(id);
         

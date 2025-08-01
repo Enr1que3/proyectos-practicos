@@ -2,16 +2,20 @@ package com.example.serviceImpl;
 
 import com.example.model.Deportista;
 import com.example.service.DeportistaService;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 
 @Service
 public class DeportistaServiceImpl implements DeportistaService{
-    
+   
     List<Deportista> listaDeportista = new ArrayList<>(); 
+     
     
     /**
      * se agregan valores de prueba
@@ -28,36 +32,22 @@ public class DeportistaServiceImpl implements DeportistaService{
 
     @Override
     public Deportista agregarDeportista(Deportista deportista) {
-        
-//        listaDeportista.stream().forEach(nuevo -> {
-//            deportista.setNombre(nuevo.getNombre());
-//            deportista.setAp(nuevo.getAp());
-//            deportista.setAm(nuevo.getAm());
-//            deportista.setEspecialidad(nuevo.getEspecialidad());
-//        });
-//        
-//        listaDeportista.stream().forEach(Deportista::getNombre);
-    
+
         listaDeportista.add(deportista);
         return deportista;
         
     }
-
-    @Override
-    public Deportista buscarDeportista(String nombre) {
-        
-        listaDeportista.stream().forEach(Deportista::getNombre);
-        return listaDeportista.stream().filter(name -> name.getNombre().equalsIgnoreCase(nombre)).findFirst().orElse(null);
-        
-    }
     
-    /**
-     * el metodo buscarPorId(long id) no se implementa en el controller
-    */
+    @Override
+    public List<Deportista> listarTodos(){
+       return listaDeportista.stream().collect(Collectors.toList());
+    }
 
     @Override
     public Deportista buscarPorId(long id) {
+        generarTxt(listaDeportista);
         return listaDeportista.stream().filter(idn -> idn.getIdDeportista() == id).findFirst().orElse(null);
+ 
     }
 
     @Override
@@ -69,29 +59,7 @@ public class DeportistaServiceImpl implements DeportistaService{
             nuevo.setAm(deportista.getAm());
             nuevo.setEspecialidad(deportista.getEspecialidad());
         });
-        
-                
-                
-        
-//        listaDeportista.stream().forEach(nuevo -> {
-//            if(nuevo.getIdDeportista() == id){
-//                deportista.setNombre(nuevo.getNombre());
-//                deportista.setAp(nuevo.getAp());
-//                deportista.setAm(nuevo.getAm());
-//                deportista.setEspecialidad(nuevo.getEspecialidad());
-//            }
-//        });
 
-//        for(Deportista d : listaDeportista){
-//            if(d.getIdDeportista() == id){
-//                d.setNombre(deportista.getNombre());
-//                d.setAp(deportista.getAp());
-//                d.setAm(deportista.getNombre());
-//                d.setEspecialidad(deportista.getEspecialidad());
-//                return d;
-//            }
-//        }
-        
         return deportista;
       
     }
@@ -102,4 +70,18 @@ public class DeportistaServiceImpl implements DeportistaService{
         return "Deportista con id: " + id + " eliminado correctamente";
     }
     
+    
+    private String generarTxt(List<Deportista> deportistas){
+        
+        try(BufferedWriter txt = new BufferedWriter(new FileWriter("deportista.txt"))){
+            for(Deportista d : deportistas){
+                txt.write(d.getNombre()+"| ");
+            }
+        }catch(IOException e){
+            
+        }
+        
+        return "Se genero el block de notas";
+    }
+
 }
