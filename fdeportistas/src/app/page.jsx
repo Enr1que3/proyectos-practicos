@@ -51,7 +51,7 @@ export default function HomeSwitcher() {
       </h2>
 
       {/* Botón con efecto hover */}
-      <Link href="/registros">
+      <Link href="/registros" style={{textDecoration:"none"}}>
         <button
           style={{
             padding: "1rem 2.5rem",
