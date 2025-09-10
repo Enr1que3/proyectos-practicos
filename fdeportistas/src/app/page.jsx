@@ -1,11 +1,43 @@
 'use client';
 
+import { useState } from "react";
+import axios from "axios";
 import Link from "next/link";
 import "./home.css";
+import { useRouter } from 'next/navigation'
 
 
 export default function HomeSwitcher() {
 
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const registro = useRouter();
+  const [validar, setValidar] = useState("");
+
+  const request = {
+    username,
+    password
+  }
+
+  const login = async () => {
+    const respuesta = await axios.post("http://localhost:8080/v1/login", request);
+    console.log(respuesta.data);
+  }
+
+  const validarCampos = () => {
+
+    if ((username.trim() === "" || username === 'admin') || password.trim() === "") {
+      setValidar(`el usuario y/o la contrasena son obligatorios`);
+      setUsername("");
+      setPassword("");
+      alert(validar);
+
+    } else {
+
+      registro.push('/inicio');
+      login();
+    }
+  }
 
 
   return (
@@ -23,76 +55,53 @@ export default function HomeSwitcher() {
         textAlign: "center",
       }}
     >
-      {/* Título con sombra y animación */}
-      <h1
+      <div
         style={{
-          fontSize: "3.5rem",
-          fontWeight: "bold",
-          marginBottom: "1rem",
-          textShadow: "2px 4px 8px rgba(0,0,0,0.3)",
-          animation: "fadeInDown 1s ease-out",
+          backgroundColor: "rgba(255, 255, 255, 0.1)",
+          padding: "2rem",
+          borderRadius: "12px",
+          boxShadow: "0 8px 32px rgba(0, 0, 0, 0.2)",
+          maxWidth: "400px",
+          width: "100%",
         }}
       >
-        🏅 ¡Bienvenido al Gestor de Deportistas!
-      </h1>
-
-      {/* Subtítulo */}
-      <h2
-        style={{
-          fontSize: "1.5rem",
-          marginBottom: "2rem",
-          maxWidth: "600px",
-          lineHeight: "1.5",
-          opacity: 0.9,
-        }}
+        <h1 style={{ marginBottom: "1.5rem", fontSize: "2rem" }}>Iniciar Sesión</h1
       >
-        Aquí podrás <b>registrar y administrar</b> a los deportistas del sistema
-        de forma rápida y sencilla.
-      </h2>
-
-      {/* Botón con efecto hover */}
-      <Link href="/registros" style={{textDecoration:"none"}}>
-        <button
+        <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Username"
           style={{
-            padding: "1rem 2.5rem",
-            fontSize: "1.2rem",
-            background: "#fff",
-            color: "#0072ff",
-            border: "none",
-            borderRadius: "50px",
-            cursor: "pointer",
-            fontWeight: "bold",
-            boxShadow: "0 8px 20px rgba(0,0,0,0.2)",
-            transition: "all 0.3s ease",
-          }}
-          onMouseOver={(e) => {
-            e.target.style.background = "#0072ff";
-            e.target.style.color = "#fff";
-            e.target.style.transform = "scale(1.05)";
-          }}
-          onMouseOut={(e) => {
-            e.target.style.background = "#fff";
-            e.target.style.color = "#0072ff";
-            e.target.style.transform = "scale(1)";
-          }}
-        >
-          ➕ Agregar Deportistas
-        </button>
-      </Link>
+            padding: "0.8rem", borderRadius: "8px", border: "none", fontSize: "1rem", width: "250px",
+            textAlign: "center", color: "#fff", backgroundColor: "#ffffff20", border: "1px solid #ffffff50", outline: "none"
 
-      {/* Animación CSS */}
-      <style>{`
-        @keyframes fadeInDown {
-          from {
-            opacity: 0;
-            transform: translateY(-20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-      `}</style>
+          }}
+        />
+        <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password"
+          style={{
+            padding: "0.8rem", borderRadius: "8px", border: "none", fontSize: "1rem", width: "250px", marginTop: "1rem",
+            textAlign: "center", color: "#fff", backgroundColor: "#ffffff20", border: "1px solid #ffffff50", outline: "none"
+
+          }}
+        />
+        <br />
+
+        <button
+          onClick={validarCampos}
+          style={{
+            marginTop: "1rem",
+            background: "linear-gradient(90deg, #43cea2 0%, #185a9d 100%)",
+            color: "#fff",
+            padding: "0.8rem 1.5rem",
+            border: "none",
+            borderRadius: "8px",
+            cursor: "pointer",
+            fontSize: "1rem",
+            fontWeight: "bold",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
+          }}
+          type="button"
+        >
+          LogIn
+        </button>
+      </div>
     </div>
   );
 }

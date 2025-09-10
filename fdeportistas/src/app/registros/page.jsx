@@ -166,7 +166,7 @@ function Registros() {
                 {mensaje && (
                     <div style={{ marginTop: "1rem", fontWeight: "bold" }}>{mensaje}</div>
                 )}
-                <Link href="/" style={{ color: "#fff", textDecoration: "none", textDecoration: "none" }}>
+                <Link href="/inicio" style={{ color: "#fff", textDecoration: "none", textDecoration: "none" }}>
 
                     <button
                         style={{

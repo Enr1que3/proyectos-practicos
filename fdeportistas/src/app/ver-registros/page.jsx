@@ -1,6 +1,6 @@
 'use client';
 
-import { React, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import Link from "next/link";
 import Box from '@mui/material/Box';
@@ -44,7 +44,8 @@ export default function VerResitros() {
             console.log(response.data);
             return response.data;
         } catch (error) {
-            alert("Datos Cargando...");
+            alert(error === true ? "Error al obtener los registros" : error.message);
+            
         }
     }
 
@@ -56,7 +57,7 @@ export default function VerResitros() {
         especialidad
     }
 
-    const sendData = async (e) => {
+    const actualizar = async (e) => {
         e.preventDefault();
         try {
             if (!registroId) return;
@@ -72,7 +73,7 @@ export default function VerResitros() {
         }
     }
 
-    const eliminarRegistro = async () => {
+    const eliminar = async () => {
         try {
             const response = await axios.delete(`http://localhost:8080/v1/borrar/${registroId}`);
             setRespuesta(response.data);
@@ -113,7 +114,7 @@ export default function VerResitros() {
                 textAlign: "center",
             }}
         >
-            
+
             <h1>Ver Registros</h1>
             <p>Aquí podrás ver los registros de los deportistas.</p>
             <table
@@ -130,7 +131,7 @@ export default function VerResitros() {
             >
                 <thead>
                     <tr style={{ background: "linear-gradient(90deg, #43cea2 0%, #185a9d 100%)" }}>
-                        
+
                         <th style={{
                             padding: "1rem",
                             fontSize: "1.1rem",
@@ -163,19 +164,20 @@ export default function VerResitros() {
                             letterSpacing: "1px",
                             borderBottom: "2px solid #185a9d"
                         }}>Especialidad</th>
-                        <th colSpan= {3} style={{
+                        <th colSpan={3} style={{
                             padding: "1rem",
                             fontSize: "1.1rem",
                             color: "#fff",
                             textTransform: "uppercase",
                             letterSpacing: "1px",
                             borderBottom: "2px solid #185a9d",
-                            
+
                             textAlign: "center"
                         }}>Opciones</th>
                     </tr>
                 </thead>
-                <tbody>
+                {registros ? (
+                    <tbody>
                     {registros.map((registro, index) => (
                         <tr
                             key={index}
@@ -202,6 +204,7 @@ export default function VerResitros() {
                         </tr>
                     ))}
                 </tbody>
+                ) : <p>no hay datos por mostrar</p>}
             </table>
             <div>
 
@@ -240,7 +243,7 @@ export default function VerResitros() {
                                 variant="contained"
                                 color="error"
                                 onClick={() => {
-                                    eliminarRegistro();
+                                    eliminar();
                                     handleDeleteClose();
                                 }}
                             >
@@ -249,7 +252,7 @@ export default function VerResitros() {
                             <Button variant="outlined" onClick={handleDeleteClose}>
                                 Cancelar
                             </Button>
-                            
+
                         </div>
                     </Typography>
                 </Box>
@@ -268,51 +271,69 @@ export default function VerResitros() {
                         Registro Actual
                     </Typography>
                     <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                        {
-                            registroId && (
-                                <form onSubmit={sendData} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-                                    <input
-                                        type="text"
-                                        placeholder="Nombre"
-                                        value={nombre}
-                                        onChange={(e) => setNombre(e.target.value)}
-                                        style={{ padding: "0.5rem", borderRadius: "4px", border: "1px solid #ccc" }}
-                                    />
-                                    <input
-                                        type="text"
-                                        placeholder="Apellido Paterno"
-                                        value={ap}
-                                        onChange={(e) => setAp(e.target.value)}
-                                        style={{ padding: "0.5rem", borderRadius: "4px", border: "1px solid #ccc" }}
-                                    />
-                                    <input
-                                        type="text"
-                                        placeholder="Apellido Materno"
-                                        value={am}
-                                        onChange={(e) => setAm(e.target.value)}
-                                        style={{ padding: "0.5rem", borderRadius: "4px", border: "1px solid #ccc" }}
-                                    />
-                                    <input
-                                        type="text"
-                                        placeholder="Especialidad"
-                                        value={especialidad}
-                                        onChange={(e) => setEspecialidad(e.target.value)}
-                                        style={{ padding: "0.5rem", borderRadius: "4px", border: "1px solid #ccc" }}
-                                    />
-                                    <button type="submit" style={{
-                                        background: "linear-gradient(90deg, #43cea2 0%, #185a9d 100%)",
-                                        color: "#fff",
-                                        padding: "0.8rem 1.5rem",
-                                        border: "none",
-                                        borderRadius: "8px",
-                                        cursor: "pointer",
-                                        fontSize: "1rem",
-                                        fontWeight: "bold",
-                                        boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
-                                    }}>Guardar Cambios</button>
-                                </form>
-                            )
-                        }
+                        {registroId && (
+                            (() => {
+                                const registro = registros.find(r => r.id === registroId); // Busca el objeto por id
+                                return (
+                                    <form onSubmit={actualizar} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+                                        <input
+                                            type="text"
+                                            placeholder={registro?.nombre || "Nombre"}
+                                            value={nombre}
+                                            onChange={(e) => setNombre(e.target.value)}
+                                            style={{ padding: "0.5rem", borderRadius: "4px", border: "1px solid #ccc" }}
+                                        />
+                                        <input
+                                            type="text"
+                                            placeholder={registro?.ap || "Apellido Paterno"}
+                                            value={ap}
+                                            onChange={(e) => setAp(e.target.value)}
+                                            style={{ padding: "0.5rem", borderRadius: "4px", border: "1px solid #ccc" }}
+                                        />
+                                        <input
+                                            type="text"
+                                            placeholder={registro?.am || "Apellido Materno"}
+                                            value={am}
+                                            onChange={(e) => setAm(e.target.value)}
+                                            style={{ padding: "0.5rem", borderRadius: "4px", border: "1px solid #ccc" }}
+                                        />
+                                        <input
+                                            type="text"
+                                            placeholder={registro?.especialidad || "Especialidad"}
+                                            value={especialidad}
+                                            onChange={(e) => setEspecialidad(e.target.value)}
+                                            style={{ padding: "0.5rem", borderRadius: "4px", border: "1px solid #ccc" }}
+                                        />
+                                        <button
+                                            type="submit"
+                                            style={{
+                                                background: "linear-gradient(90deg, #43cea2 0%, #185a9d 100%)",
+                                                color: "#fff",
+                                                padding: "0.8rem 1.5rem",
+                                                border: "none",
+                                                borderRadius: "8px",
+                                                cursor: "pointer",
+                                                fontSize: "1rem",
+                                                fontWeight: "bold",
+                                                boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
+                                            }}
+                                        >
+                                            Guardar Cambios
+                                        </button>
+                                    </form>
+                                );
+                            })()
+                        )}
+
+                        <div style={{ display: "flex", justifyContent: "space-between", marginTop: "1rem" }}>
+                            
+                           
+                            <Button variant="outlined" onClick={handleClose}>
+                                cerrar
+                            </Button>
+
+                        </div>
+
                     </Typography>
                 </Box>
 
