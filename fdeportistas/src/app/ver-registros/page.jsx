@@ -9,27 +9,37 @@ import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import { LuPencil } from "react-icons/lu";
 import { FaRegTrashAlt } from "react-icons/fa";
+import DownloadDocument from "./PdfDownLodad";
 
 import "./ver-registros.css";
 
-export default function VerResitros() {
+import Alert from '@mui/material/Alert';
+import AlertTitle from '@mui/material/AlertTitle';
 
+export default function VerResitros() {
+    // para obtener registros de la BD
     const [registros, setRegistros] = useState([]);
+
+    // para eliminar registros de la BD
     const [respuesta, setRespuesta] = useState("");
 
+    // Es el objeto que se envia para hacer un insert en la BDf
     const [nombre, setNombre] = useState("");
     const [ap, setAp] = useState("");
     const [am, setAm] = useState("");
     const [especialidad, setEspecialidad] = useState("");
 
+    // para manerjar el modal
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
+    // para manejar el modal de eliminar
     const [deleteOpen, setDeleteOpen] = useState(false);
     const handleDeleteOpen = () => setDeleteOpen(true);
     const handleDeleteClose = () => setDeleteOpen(false);
 
+    
 
     const [registroId, setRegistroId] = useState(null);
 
@@ -67,7 +77,7 @@ export default function VerResitros() {
             setAm("");
             setEspecialidad("");
             handleClose();
-            console.log(response.data);
+            console.log("registro ",response.data);
         } catch (error) {
             console.error("Error al enviar los datos:", error);
         }
@@ -114,6 +124,7 @@ export default function VerResitros() {
                 textAlign: "center",
             }}
         >
+            
 
             <h1>Ver Registros</h1>
             <p>Aquí podrás ver los registros de los deportistas.</p>
@@ -341,7 +352,8 @@ export default function VerResitros() {
 
 
 
-            <Link href="/registros" style={{ textDecoration: "none" }}>
+            <div>
+                <Link href="/registros" style={{ textDecoration: "none" }}>
                 <button style={{
                     background: "linear-gradient(90deg, #43cea2 0%, #185a9d 100%)",
                     color: "#fff",
@@ -355,6 +367,10 @@ export default function VerResitros() {
                 }}>Regresar
                 </button>
             </Link>
+
+            <DownloadDocument />
+            </div>
+            
         </div>
     );
 

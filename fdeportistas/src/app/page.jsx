@@ -66,7 +66,7 @@ export default function HomeSwitcher() {
         }}
       >
         <h1 style={{ marginBottom: "1.5rem", fontSize: "2rem" }}>Iniciar Sesión</h1
-      >
+        >
         <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Username"
           style={{
             padding: "0.8rem", borderRadius: "8px", border: "none", fontSize: "1rem", width: "250px",
